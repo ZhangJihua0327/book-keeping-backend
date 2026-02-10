@@ -1,0 +1,292 @@
+basePath: /
+definitions:
+  handler.CreateCustomerRequest:
+    properties:
+      customer_name:
+        type: string
+    required:
+    - customer_name
+    type: object
+  handler.CreateTrunkModelRequest:
+    properties:
+      trunk_model:
+        type: string
+    required:
+    - trunk_model
+    type: object
+  model.Customer:
+    properties:
+      customer_name:
+        type: string
+      id:
+        type: integer
+    type: object
+  model.TrunkModel:
+    properties:
+      id:
+        type: integer
+      trunk_model:
+        type: string
+    type: object
+  model.WorkRecord:
+    properties:
+      charged:
+        type: boolean
+      construction_site:
+        type: string
+      customer_name:
+        type: string
+      date:
+        description: Using time.Time for date, might need custom scanner or just "2006-01-02"
+          string if purely JSON handling preference, but time.Time is standard for
+          GORM
+        type: string
+      id:
+        type: integer
+      price:
+        type: integer
+      quantity:
+        type: integer
+      record_id:
+        type: string
+      remark:
+        type: string
+      trunk_model:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a sample server for a book keeping application.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Book Keeping API
+  version: "1.0"
+paths:
+  /api/customers:
+    get:
+      description: Get a list of all customers
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Customer'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get all customers
+      tags:
+      - customers
+    post:
+      consumes:
+      - application/json
+      description: Add a new customer to the database
+      parameters:
+      - description: Customer Name
+        in: body
+        name: customer
+        required: true
+        schema:
+          $ref: '#/definitions/handler.CreateCustomerRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Add a new customer
+      tags:
+      - customers
+  /api/models:
+    get:
+      description: Get a list of all trunk models
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.TrunkModel'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get all trunk models
+      tags:
+      - models
+    post:
+      consumes:
+      - application/json
+      description: Add a new trunk model to the database
+      parameters:
+      - description: Trunk Model
+        in: body
+        name: model
+        required: true
+        schema:
+          $ref: '#/definitions/handler.CreateTrunkModelRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Add a new trunk model
+      tags:
+      - models
+  /api/records:
+    get:
+      description: Get all work records created on a specific date, ordered by ID
+        descending
+      parameters:
+      - description: Date (YYYY-MM-DD)
+        in: query
+        name: date
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.WorkRecord'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get work records by date
+      tags:
+      - records
+    post:
+      consumes:
+      - application/json
+      description: Add a new work record to the database
+      parameters:
+      - description: Work Record
+        in: body
+        name: record
+        required: true
+        schema:
+          $ref: '#/definitions/model.WorkRecord'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Add a new work record
+      tags:
+      - records
+  /api/records/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Update an existing work record by ID
+      parameters:
+      - description: Record ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updates (pass only fields to update)
+        in: body
+        name: updates
+        required: true
+        schema:
+          $ref: '#/definitions/model.WorkRecord'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update a work record
+      tags:
+      - records
+swagger: "2.0"
