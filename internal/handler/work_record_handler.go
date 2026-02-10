@@ -91,6 +91,42 @@ func (h *WorkRecordHandler) UpdateRecord(c *gin.Context) {
 		return
 	}
 
+	// Manual validation for updates to ensure non-empty fields if they are present
+	requiredStringFields := []string{"trunk_model", "customer_name", "construction_site"}
+	for _, field := range requiredStringFields {
+		if val, ok := updates[field]; ok {
+			if strVal, ok := val.(string); ok && strVal == "" {
+				c.JSON(http.StatusBadRequest, gin.H{"error": field + " cannot be empty"})
+				return
+			}
+		}
+	}
+
+	// Validate date, quantity, price, and charged presence if intended to be "non-empty" equivalent?
+	// For numbers and booleans, "non-empty" usually means strictly they must be valid values.
+	// Since it's a map binding, 0 or false are values. Checking for their existence is enough to know user tried to set them.
+	// If user sends key "quantity": 0, validation might fail if we require > 0.
+	if val, ok := updates["quantity"]; ok {
+		// JSON numbers are often float64 in map[string]interface{}
+		if fVal, ok := val.(float64); ok && fVal == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "quantity cannot be 0"})
+			return
+		}
+	}
+	if val, ok := updates["price"]; ok {
+		if fVal, ok := val.(float64); ok && fVal == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "price cannot be 0"})
+			return
+		}
+	}
+
+	// 'charged' can be true or false, both are "non-empty" values.
+	// If the key is present, it's fine. nil is not possible in JSON boolean unless explicit null.
+	if val, ok := updates["charged"]; ok && val == nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "charged cannot be null"})
+		return
+	}
+
 	if err := h.service.UpdateRecord(id, updates); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

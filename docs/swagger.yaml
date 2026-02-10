@@ -37,9 +37,6 @@ definitions:
       customer_name:
         type: string
       date:
-        description: Using time.Time for date, might need custom scanner or just "2006-01-02"
-          string if purely JSON handling preference, but time.Time is standard for
-          GORM
         type: string
       id:
         type: integer
@@ -53,6 +50,14 @@ definitions:
         type: string
       trunk_model:
         type: string
+    required:
+    - charged
+    - construction_site
+    - customer_name
+    - date
+    - price
+    - quantity
+    - trunk_model
     type: object
 host: localhost:8080
 info:

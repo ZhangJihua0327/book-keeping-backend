@@ -405,6 +405,15 @@ const docTemplate = `{
         },
         "model.WorkRecord": {
             "type": "object",
+            "required": [
+                "charged",
+                "construction_site",
+                "customer_name",
+                "date",
+                "price",
+                "quantity",
+                "trunk_model"
+            ],
             "properties": {
                 "charged": {
                     "type": "boolean"
@@ -416,7 +425,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "date": {
-                    "description": "Using time.Time for date, might need custom scanner or just \"2006-01-02\" string if purely JSON handling preference, but time.Time is standard for GORM",
                     "type": "string"
                 },
                 "id": {
