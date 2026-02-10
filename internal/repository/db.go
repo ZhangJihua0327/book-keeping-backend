@@ -14,7 +14,7 @@ func InitDB() {
 	// DSN format: user:password@tcp(host:port)/dbname?charset=utf8mb4&parseTime=True&loc=Local
 	// Assuming database name 'book_keeping' based on project name.
 	// If it fails, user might need to create the DB first or update the name.
-	dsn := "zhangjihua:Lollipop@tcp(bookeeper-db:3306)/book_keeping?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "zhangjihua:Lollipop@tcp(bookeeper-db:3306)/bookeeper?charset=utf8mb4&parseTime=True&loc=Local"
 	var err error
 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {

@@ -10,5 +10,4 @@ services:
 
 networks:
   bookeeper:
-    driver: bridge
-    name: bookeeper
+    external: true
