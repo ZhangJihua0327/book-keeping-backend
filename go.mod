@@ -1,6 +1,6 @@
 module book-keeping-backend
 
-go 1.25.6
+go 1.24.0
 
 require (
 	github.com/gin-gonic/gin v1.11.0

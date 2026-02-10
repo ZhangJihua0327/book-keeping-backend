@@ -1,0 +1,14 @@
+services:
+  bookeeper-backend:
+    container_name: bookeeper-backend
+    build: .
+    ports:
+      - "8000:8080"
+    networks:
+      - bookeeper
+    restart: always
+
+networks:
+  bookeeper:
+    driver: bridge
+    name: bookeeper
