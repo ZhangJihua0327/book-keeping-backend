@@ -47,6 +47,11 @@ func main() {
 	// 5. Setup Router
 	r := gin.Default()
 
+	// Root URL
+	r.GET("/", func(c *gin.Context) {
+		c.String(200, "welcome to bookeeper")
+	})
+
 	// Optional: Add CORS middleware if needed
 	// r.Use(cors.Default())
 
