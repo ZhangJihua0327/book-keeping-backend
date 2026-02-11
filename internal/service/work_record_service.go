@@ -51,7 +51,7 @@ func (s *WorkRecordService) ExportRecords(filter model.WorkRecordFilter) (*bytes
 		f.SetCellValue(sheetName, fmt.Sprintf("A%d", row), r.ID)
 		f.SetCellValue(sheetName, fmt.Sprintf("B%d", row), r.RecordID)
 		f.SetCellValue(sheetName, fmt.Sprintf("C%d", row), r.TrunkModel)
-		f.SetCellValue(sheetName, fmt.Sprintf("D%d", row), r.Date.Format("2006-01-02"))
+		f.SetCellValue(sheetName, fmt.Sprintf("D%d", row), r.Date.String())
 		f.SetCellValue(sheetName, fmt.Sprintf("E%d", row), r.CustomerName)
 		f.SetCellValue(sheetName, fmt.Sprintf("F%d", row), r.ConstructionSite)
 		f.SetCellValue(sheetName, fmt.Sprintf("G%d", row), r.Quantity)
