@@ -5,7 +5,8 @@ FROM golang:1.24.13-alpine3.22 AS builder
 ENV GO111MODULE=on \
     CGO_ENABLED=0 \
     GOOS=linux \
-    GOARCH=amd64
+    GOARCH=amd64 \
+    GOPROXY=https://mirrors.aliyun.com/goproxy/,direct
 
 # Set working directory
 WORKDIR /app
@@ -24,6 +25,9 @@ RUN go build -o main ./cmd/server/main.go
 
 # Final stage
 FROM alpine:3.22
+
+# Change apk source to Aliyun
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 
 # Install basic dependencies (optional, for debugging/timezone)
 RUN apk --no-cache add tzdata
