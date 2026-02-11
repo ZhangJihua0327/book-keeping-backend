@@ -18,3 +18,9 @@ type WorkRecord struct {
 func (WorkRecord) TableName() string {
 	return "work_record"
 }
+
+type WorkRecordFilter struct {
+	CustomerName string `form:"customer_name"`
+	TrunkModel   string `form:"trunk_model"`
+	Date         string `form:"date"`
+}

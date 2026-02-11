@@ -30,3 +30,19 @@ func (r *WorkRecordRepository) Update(id uint64, updates map[string]interface{})
 func (r *WorkRecordRepository) UpdateByRecordID(recordID string, updates map[string]interface{}) error {
 	return DB.Model(&model.WorkRecord{}).Where("record_id = ?", recordID).Updates(updates).Error
 }
+
+func (r *WorkRecordRepository) GetByFilter(filter model.WorkRecordFilter) ([]model.WorkRecord, error) {
+	db := DB.Model(&model.WorkRecord{})
+	if filter.CustomerName != "" {
+		db = db.Where("customer_name = ?", filter.CustomerName)
+	}
+	if filter.TrunkModel != "" {
+		db = db.Where("trunk_model = ?", filter.TrunkModel)
+	}
+	if filter.Date != "" {
+		db = db.Where("date = ?", filter.Date)
+	}
+	var records []model.WorkRecord
+	err := db.Order("id DESC").Find(&records).Error
+	return records, err
+}

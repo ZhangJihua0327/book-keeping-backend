@@ -133,3 +133,34 @@ func (h *WorkRecordHandler) UpdateRecord(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "Record updated"})
 }
+
+// ExportRecords godoc
+// @Summary Export work records to Excel
+// @Description Export work records based on filters
+// @Tags records
+// @Produce application/octet-stream
+// @Param customer_name query string false "Customer Name"
+// @Param trunk_model query string false "Trunk Model"
+// @Param date query string false "Date (YYYY-MM-DD)"
+// @Success 200 {file} file
+// @Failure 500 {object} map[string]string
+// @Router /api/records/export [get]
+func (h *WorkRecordHandler) ExportRecords(c *gin.Context) {
+	var filter model.WorkRecordFilter
+	if err := c.ShouldBindQuery(&filter); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	buffer, err := h.service.ExportRecords(filter)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	fileName := "work_records.xlsx"
+	c.Header("Content-Disposition", "attachment; filename="+fileName)
+	c.Header("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+	c.Header("Content-Transfer-Encoding", "binary")
+	c.Data(http.StatusOK, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", buffer.Bytes())
+}
