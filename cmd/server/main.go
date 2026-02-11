@@ -75,7 +75,9 @@ func main() {
 		api.GET("/records", recordHandler.GetRecords)
 		// 7. 对record_id 记录进行更正
 		api.PUT("/records/:id", recordHandler.UpdateRecord)
-		// 8. 导出 excel
+		// 8. 删除记录
+		api.DELETE("/records/:id", recordHandler.DeleteRecord)
+		// 9. 导出 excel
 		api.GET("/records/export", recordHandler.ExportRecords)
 	}
 

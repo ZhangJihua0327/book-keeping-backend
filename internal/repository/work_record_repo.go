@@ -31,6 +31,11 @@ func (r *WorkRecordRepository) UpdateByRecordID(recordID string, updates map[str
 	return DB.Model(&model.WorkRecord{}).Where("record_id = ?", recordID).Updates(updates).Error
 }
 
+// DeleteByRecordID 根据 record_id 删除记录
+func (r *WorkRecordRepository) DeleteByRecordID(recordID string) error {
+	return DB.Where("record_id = ?", recordID).Delete(&model.WorkRecord{}).Error
+}
+
 func (r *WorkRecordRepository) GetByFilter(filter model.WorkRecordFilter) ([]model.WorkRecord, error) {
 	db := DB.Model(&model.WorkRecord{})
 	if filter.CustomerName != "" {

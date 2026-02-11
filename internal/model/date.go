@@ -8,6 +8,7 @@ import (
 )
 
 // Date represents a date in YYYY-MM-DD format
+// @swaggertype string
 type Date time.Time
 
 // UnmarshalJSON parses a JSON string in YYYY-MM-DD format

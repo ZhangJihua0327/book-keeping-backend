@@ -4,7 +4,6 @@ import (
 	"book-keeping-backend/internal/model"
 	"book-keeping-backend/internal/service"
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -67,21 +66,20 @@ func (h *WorkRecordHandler) GetRecords(c *gin.Context) {
 
 // UpdateRecord godoc
 // @Summary Update a work record
-// @Description Update an existing work record by ID
+// @Description Update an existing work record by RecordID
 // @Tags records
 // @Accept json
 // @Produce json
-// @Param id path int true "Record ID"
+// @Param id path string true "Record ID"
 // @Param updates body model.WorkRecord true "Updates (pass only fields to update)"
 // @Success 200 {object} map[string]string
 // @Failure 400 {object} map[string]string
 // @Failure 500 {object} map[string]string
 // @Router /api/records/{id} [put]
 func (h *WorkRecordHandler) UpdateRecord(c *gin.Context) {
-	idStr := c.Param("id")
-	id, err := strconv.ParseUint(idStr, 10, 64)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+	recordID := c.Param("id")
+	if recordID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Record ID is required"})
 		return
 	}
 
@@ -127,11 +125,35 @@ func (h *WorkRecordHandler) UpdateRecord(c *gin.Context) {
 		return
 	}
 
-	if err := h.service.UpdateRecord(id, updates); err != nil {
+	if err := h.service.UpdateRecord(recordID, updates); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "Record updated"})
+}
+
+// DeleteRecord godoc
+// @Summary Delete a work record
+// @Description Delete an existing work record by RecordID
+// @Tags records
+// @Produce json
+// @Param id path string true "Record ID"
+// @Success 200 {object} map[string]string
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /api/records/{id} [delete]
+func (h *WorkRecordHandler) DeleteRecord(c *gin.Context) {
+	recordID := c.Param("id")
+	if recordID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Record ID is required"})
+		return
+	}
+
+	if err := h.service.DeleteRecord(recordID); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "Record deleted"})
 }
 
 // ExportRecords godoc

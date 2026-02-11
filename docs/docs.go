@@ -295,9 +295,58 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/records/export": {
+            "get": {
+                "description": "Export work records based on filters",
+                "produces": [
+                    "application/octet-stream"
+                ],
+                "tags": [
+                    "records"
+                ],
+                "summary": "Export work records to Excel",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Customer Name",
+                        "name": "customer_name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Trunk Model",
+                        "name": "trunk_model",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Date (YYYY-MM-DD)",
+                        "name": "date",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "file"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/records/{id}": {
             "put": {
-                "description": "Update an existing work record by ID",
+                "description": "Update an existing work record by RecordID",
                 "consumes": [
                     "application/json"
                 ],
@@ -310,7 +359,7 @@ const docTemplate = `{
                 "summary": "Update a work record",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "Record ID",
                         "name": "id",
                         "in": "path",
@@ -324,6 +373,54 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/model.WorkRecord"
                         }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete an existing work record by RecordID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "records"
+                ],
+                "summary": "Delete a work record",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Record ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {

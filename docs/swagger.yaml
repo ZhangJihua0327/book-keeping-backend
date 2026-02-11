@@ -254,16 +254,48 @@ paths:
       tags:
       - records
   /api/records/{id}:
-    put:
-      consumes:
-      - application/json
-      description: Update an existing work record by ID
+    delete:
+      description: Delete an existing work record by RecordID
       parameters:
       - description: Record ID
         in: path
         name: id
         required: true
-        type: integer
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete a work record
+      tags:
+      - records
+    put:
+      consumes:
+      - application/json
+      description: Update an existing work record by RecordID
+      parameters:
+      - description: Record ID
+        in: path
+        name: id
+        required: true
+        type: string
       - description: Updates (pass only fields to update)
         in: body
         name: updates
@@ -292,6 +324,38 @@ paths:
               type: string
             type: object
       summary: Update a work record
+      tags:
+      - records
+  /api/records/export:
+    get:
+      description: Export work records based on filters
+      parameters:
+      - description: Customer Name
+        in: query
+        name: customer_name
+        type: string
+      - description: Trunk Model
+        in: query
+        name: trunk_model
+        type: string
+      - description: Date (YYYY-MM-DD)
+        in: query
+        name: date
+        type: string
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: file
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Export work records to Excel
       tags:
       - records
 swagger: "2.0"

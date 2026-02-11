@@ -4,7 +4,10 @@ import (
 	"book-keeping-backend/internal/model"
 	"book-keeping-backend/internal/repository"
 	"bytes"
+	"crypto/rand"
 	"fmt"
+	"math/big"
+	"time"
 
 	"github.com/xuri/excelize/v2"
 )
@@ -18,15 +21,34 @@ func NewWorkRecordService(repo *repository.WorkRecordRepository) *WorkRecordServ
 }
 
 func (s *WorkRecordService) AddRecord(record *model.WorkRecord) error {
+	if record.RecordID == "" {
+		dateStr := time.Time(record.Date).Format("20060102")
+		randomCode := generateRandomString(6)
+		record.RecordID = fmt.Sprintf("wr-%s-%s", dateStr, randomCode)
+	}
 	return s.repo.Create(record)
+}
+
+func generateRandomString(n int) string {
+	const letters = "0123456789abcdefghijklmnopqrstuvwxyz"
+	ret := make([]byte, n)
+	for i := 0; i < n; i++ {
+		num, _ := rand.Int(rand.Reader, big.NewInt(int64(len(letters))))
+		ret[i] = letters[num.Int64()]
+	}
+	return string(ret)
 }
 
 func (s *WorkRecordService) GetRecordsByDate(dateStr string) ([]model.WorkRecord, error) {
 	return s.repo.GetByDate(dateStr)
 }
 
-func (s *WorkRecordService) UpdateRecord(id uint64, updates map[string]interface{}) error {
-	return s.repo.Update(id, updates)
+func (s *WorkRecordService) UpdateRecord(recordID string, updates map[string]interface{}) error {
+	return s.repo.UpdateByRecordID(recordID, updates)
+}
+
+func (s *WorkRecordService) DeleteRecord(recordID string) error {
+	return s.repo.DeleteByRecordID(recordID)
 }
 
 func (s *WorkRecordService) ExportRecords(filter model.WorkRecordFilter) (*bytes.Buffer, error) {
