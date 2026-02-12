@@ -27,3 +27,6 @@ CREATE TABLE IF NOT EXISTS `trunk_model` (
     `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
     `trunk_model` VARCHAR(256) COMMENT '车型'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='车型表';
+
+ALTER TABLE `customer_name` ADD UNIQUE INDEX `uk_customer_name` (`customer_name`);
+ALTER TABLE `trunk_model` ADD UNIQUE INDEX `uk_trunk_model` (`trunk_model`);
